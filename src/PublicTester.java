@@ -24,21 +24,28 @@ public class PublicTester {
         {
             System.out.println("Trial 1:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/");
+            sim.requestURL("/login");
             System.out.println(sim.getResponse());
         }
 
         {
             System.out.println("Trial 2:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/");
+            sim.postURL("/auth", "username=test&password=pass");
             System.out.println(sim.getResponse());
         }
 
         {
             System.out.println("Trial 3:");
             ClientSimulator sim = new ClientSimulator("localhost", serverPort);
-            sim.requestURL("/not_a_page");
+            sim.postURL("/auth", "username=test&password=pass2");
+            System.out.println(sim.getResponse());
+        }
+
+        {
+            System.out.println("Trial 4:");
+            ClientSimulator sim = new ClientSimulator("localhost", serverPort);
+            sim.requestURL("/auth");
             System.out.println(sim.getResponse());
         }
 
@@ -49,7 +56,7 @@ public class PublicTester {
 }
 
 
-/*
+
 class SuperRestrictive extends SecurityManager {
     public void checkPermission(Permission perm) throws SecurityException {
         //System.out.println("Checking: " + perm);
@@ -59,7 +66,7 @@ class SuperRestrictive extends SecurityManager {
         if (perm.getName().endsWith("MyClientThread.class")) return;
         if (perm.getName().endsWith("ClientSimulator.class")) return;
 
-        /* Socket stuff
+        /* Socket stuff */
         if (perm.toString().contains("resolve")) return;
         if (perm.toString().contains("listen")) return;
         if (perm.toString().contains("networkaddress")) return;
@@ -68,11 +75,13 @@ class SuperRestrictive extends SecurityManager {
         if (perm.toString().contains("writeFileDescriptor")) return;
         if (perm.toString().contains("readFileDescriptor")) return;
         if (perm.toString().contains("loadLibrary")) return;
-        if (perm.toString().contains("/usr/lib/jvm") && perm.toString().contains("read")) return;
-        if (perm.toString().contains("java.lang.reflect")) return;
+
+		if (perm.toString().contains("/usr/lib/jvm") && perm.toString().contains("read")) return;
+		if (perm.toString().contains("java.lang.reflect.ReflectPermission")) return;
         if (perm.toString().contains("exitVM")) return;
 
-        /* General
+
+        /* General */
         if (perm.getName().equals("accessDeclaredMembers")) return;
         if (perm.getName().contains("getenv.com.apple")) return;
         if (perm.toString().contains("PropertyPermission")) return;
@@ -85,4 +94,3 @@ class SuperRestrictive extends SecurityManager {
         throw new SecurityException("Unallowed Permission: " + perm);
     }
 }
-                */

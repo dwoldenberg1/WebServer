@@ -44,6 +44,14 @@ public class ClientSimulator {
         this.out.println("");
     }
 
+    public void postURL(String url, String post) {
+        this.out.println("POST " + url + " HTTP/1.1");
+        this.out.println("Host: " + host);
+        this.out.println("Content-Length: " + post.length());
+        this.out.println("");
+        this.out.println(post);
+    }
+
     public String getResponse() {
         StringBuffer response = new StringBuffer();
 

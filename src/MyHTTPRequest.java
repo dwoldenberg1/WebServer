@@ -9,8 +9,12 @@ public class MyHTTPRequest {
     protected String url      = null;
     protected String protocol = null;
 
+    private boolean firstLine = true;
+
     /* Track all of the HTTP headers that are sent */
     protected HashMap<String, String> headers = new HashMap<String, String>();
+
+    protected HashMap<String, String> postData = new HashMap<String, String>();
 
     /* Use this to track the exact parse error */
     protected String parseError = null;
@@ -21,7 +25,7 @@ public class MyHTTPRequest {
     /* Parse an incoming line */
     public void parseRequestLine(String line) {
         /* ::: THIS FUNCTION GETS CALLED FOR EVERY LINE OF THE REQUEST HEADER ::: */
-        if (line.startsWith("GET") || line.startsWith("POST") || line.startsWith("PUT") || line.startsWith("DELETE")){
+        if (firstLine){
             int space = line.indexOf(' ');
             method = line.substring(0, space);
             line=line.substring(space+1);
@@ -29,6 +33,7 @@ public class MyHTTPRequest {
             url = line.substring(0, space);
             line=line.substring(space+1);
             protocol = line.substring(0);
+            firstLine = false;
             return;
         }
 
@@ -37,6 +42,16 @@ public class MyHTTPRequest {
         String headerValue = line.substring(colon+1);
 
         headers.put(header, headerValue);
+    }
+
+    public void parseData(String line){
+        String[] dataLine= line.split("&");
+        for(String keyVal : dataLine) {
+            String key = keyVal.substring(0, keyVal.indexOf('='));
+            String val = keyVal.substring(keyVal.indexOf('=')+1);
+            postData.put(key, val);
+        }
+
     }
 
     /* Is anything wrong with the request? */
